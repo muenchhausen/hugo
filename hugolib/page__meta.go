@@ -732,6 +732,7 @@ func (p *pageMeta) newContentConverter(ps *pageState, markup string, renderingCo
 			Document:        newPageForRenderHook(ps),
 			DocumentID:      p.f.UniqueID(),
 			DocumentName:    p.f.Path(),
+			Filename:        p.f.Filename(),
 			ConfigOverrides: renderingConfigOverrides,
 		},
 	)
