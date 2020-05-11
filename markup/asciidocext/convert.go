@@ -26,9 +26,11 @@ import (
 	"github.com/gohugoio/hugo/markup/internal"
 )
 
+/* ToDo: RelPermalink patch for svg posts not working
 type pageSubset interface {
 	RelPermalink() string
 }
+*/
 
 // Provider is the package entry point.
 var Provider converter.ProviderProvider = provider{}
@@ -102,16 +104,20 @@ func (a *asciidocConverter) parseArgs(ctx converter.DocumentContext) []string {
 			a.cfg.Logger.ERROR.Println("markup.asciidocext.workingFolderCurrent requires hugo command option --destination to be set")
 		}
 
-		postDir := ""
-		page, ok := ctx.Document.(pageSubset)
-		if ok {
-			a.cfg.Logger.INFO.Println("path: ", page.RelPermalink())
-			postDir = filepath.Base(page.RelPermalink())
-		} else {
-			a.cfg.Logger.ERROR.Println("unable to cast interface to pageSubset")
-		}
+		/* ToDo: RelPermalink patch for svg posts not working for asciidoctor-diagram
+		  		postDir := ""
+				page, ok := ctx.Document.(pageSubset)
+				if ok {
+					a.cfg.Logger.INFO.Println("path: ", page.RelPermalink())
+					postDir = filepath.Base(page.RelPermalink())
+				} else {
+					a.cfg.Logger.ERROR.Println("unable to cast interface to pageSubset")
+				}
 
-		outDir, err := filepath.Abs(filepath.Join(destinationDir, filepath.Dir(ctx.DocumentName), postDir))
+				outDir, err := filepath.Abs(filepath.Join(destinationDir, filepath.Dir(ctx.DocumentName), postDir))
+		*/
+		outDir, err := filepath.Abs(filepath.Dir(filepath.Join(destinationDir, ctx.DocumentName)))
+
 		if err != nil {
 			a.cfg.Logger.ERROR.Println("asciidoctor outDir: ", err)
 		}
