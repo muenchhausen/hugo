@@ -1,5 +1,6 @@
 name: hugo
-version: "0.70.0-DEV"
+base: core
+version: "0.71.0-DEV"
 summary: Fast and Flexible Static Site Generator
 description: |
   Hugo is a static HTML and CSS website generator written in Go. It is
@@ -7,6 +8,7 @@ description: |
   with content and templates and renders them into a full HTML website.
 confinement: strict
 grade: devel # "devel" or "stable"
+license: Apache-2.0
 
 apps:
   hugo:
@@ -66,17 +68,23 @@ parts:
       ls -l $SNAPCRAFT_PART_INSTALL/bin/hugo
 
   node:
-    plugin: x-nodejs
-    node-packages: [postcss-cli]
+    plugin: nodejs
+    node-packages:
+        - postcss-cli
+        - "@babel/cli"
     filesets:
       node:
         - bin/node
       postcss:
         - bin/postcss
         - lib/node_modules/postcss-cli/*
+      babel:
+        - bin/babel.js
+        - lib/node_modules/@babel/cli/*
     prime:
       - $node
       - $postcss
+      - $babel
 
   pygments:
     plugin: python
