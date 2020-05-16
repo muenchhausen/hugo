@@ -86,12 +86,21 @@ func (a *asciidocConverter) parseArgs(ctx converter.DocumentContext) []string {
 	}
 
 	for _, extension := range cfg.Extensions {
-		if asciidocext_config.ExtensionsWhitelist[extension] != true {
-			a.cfg.Logger.ERROR.Println("Unsupported asciidoctor extension was passed in.")
+		if !asciidocext_config.ExtensionsWhitelist[extension] {
+			a.cfg.Logger.ERROR.Println("Unsupported asciidoctor extension was passed in. Extension `" + extension + "` ignored.")
 			continue
 		}
 
 		args = append(args, "-r", extension)
+	}
+
+	for attributeKey, attributeValue := range cfg.Attributes {
+		if asciidocext_config.AttributeBlacklist[attributeKey] {
+			a.cfg.Logger.ERROR.Println("Unsupported asciidoctor attribute was passed in. Attribute `" + attributeKey + "` ignored.")
+			continue
+		}
+
+		args = append(args, "-a", attributeKey+"="+attributeValue)
 	}
 
 	if cfg.WorkingFolderCurrent {
