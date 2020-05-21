@@ -478,7 +478,7 @@ func splitUserDefinedSummaryAndContent(markup string, c []byte) (summary []byte,
 
 	startTag := "p"
 	switch markup {
-	case "asciidoc":
+	case "asciidocext":
 		startTag = "div"
 
 	}
