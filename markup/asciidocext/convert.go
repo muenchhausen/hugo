@@ -106,6 +106,7 @@ func (a *asciidocConverter) parseArgs(ctx converter.DocumentContext) []string {
 	if cfg.WorkingFolderCurrent {
 		contentDir := filepath.Dir(ctx.Filename)
 		destinationDir := a.cfg.Cfg.GetString("destination")
+		sourceDir := a.cfg.Cfg.GetString("source")
 
 		if destinationDir == "" {
 			a.cfg.Logger.ERROR.Println("markup.asciidocext.workingFolderCurrent requires hugo command option --destination to be set")
@@ -116,7 +117,7 @@ func (a *asciidocConverter) parseArgs(ctx converter.DocumentContext) []string {
 
 		file := filepath.Base(ctx.Filename)
 		if file == "_index.adoc" || file == "index.adoc" {
-			outDir, err = filepath.Abs(filepath.Dir(filepath.Join(destinationDir, ctx.DocumentName)))
+			outDir, err = filepath.Abs(filepath.Dir(filepath.Join(sourceDir, destinationDir, ctx.DocumentName)))
 
 		} else {
 			postDir := ""
@@ -127,7 +128,7 @@ func (a *asciidocConverter) parseArgs(ctx converter.DocumentContext) []string {
 				a.cfg.Logger.ERROR.Println("unable to cast interface to pageSubset")
 			}
 
-			outDir, err = filepath.Abs(filepath.Join(destinationDir, filepath.Dir(ctx.DocumentName), postDir))
+			outDir, err = filepath.Abs(filepath.Join(sourceDir, destinationDir, filepath.Dir(ctx.DocumentName), postDir))
 		}
 
 		if err != nil {
