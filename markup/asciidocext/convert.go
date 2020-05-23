@@ -105,8 +105,8 @@ func (a *asciidocConverter) parseArgs(ctx converter.DocumentContext) []string {
 
 	if cfg.WorkingFolderCurrent {
 		contentDir := filepath.Dir(ctx.Filename)
-		destinationDir := a.cfg.Cfg.GetString("destination")
 		sourceDir := a.cfg.Cfg.GetString("source")
+		destinationDir := a.cfg.Cfg.GetString("destination")
 
 		if destinationDir == "" {
 			a.cfg.Logger.ERROR.Println("markup.asciidocext.workingFolderCurrent requires hugo command option --destination to be set")
