@@ -133,22 +133,21 @@ func (p *pageState) GitInfo() *gitmap.GitInfo {
 
 // GetTerms gets the terms defined on this page in the given taxonomy.
 func (p *pageState) GetTerms(taxonomy string) page.Pages {
-	taxonomy = strings.ToLower(taxonomy)
-	m := p.s.pageMap
-	prefix := cleanTreeKey(taxonomy)
-
-	var self string
-	if p.IsHome() {
-		// TODO(bep) make this less magical, see taxonomyEntries.Insert.
-		self = "/" + page.KindHome
-	} else if p.treeRef != nil {
-		self = p.treeRef.key
+	if p.treeRef == nil {
+		return nil
 	}
+
+	m := p.s.pageMap
+
+	taxonomy = strings.ToLower(taxonomy)
+	prefix := cleanSectionTreeKey(taxonomy)
+	self := strings.TrimPrefix(p.treeRef.key, "/")
 
 	var pas page.Pages
 
 	m.taxonomies.WalkQuery(pageMapQuery{Prefix: prefix}, func(s string, n *contentNode) bool {
-		if _, found := m.taxonomyEntries.Get(s + self); found {
+		key := s + self
+		if _, found := m.taxonomyEntries.Get(key); found {
 			pas = append(pas, n.p)
 		}
 		return false
@@ -602,6 +601,10 @@ func (p *pageState) RenderString(args ...interface{}) (template.HTML, error) {
 	var err error
 	s, err = cast.ToStringE(args[sidx])
 	if err != nil {
+		return "", err
+	}
+
+	if err = p.pageOutput.initRenderHooks(); err != nil {
 		return "", err
 	}
 
